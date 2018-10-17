@@ -1,7 +1,11 @@
 # Look at infrastructure.md file
 # Notes:
-#   1. While creating a subnet in the virtual network, if you don't specify a network secuity group then a new one will be created
-#   2. 
+#   1. While creating a subnet in the virtual network, if you don't specify a network security group then a new one will be created
+#   2. While creating a network security group, the rule names cannot have a space in them.
+#   3. While creating a NIC,
+#       3.1 disable the option - "create_with_security_group" otherwise a security group will be created per nic
+#       3.2 if you do not provide a public ip address name, no public ips will be associated with the nic
+
 - name: Setup networking for simple infrastructure
   hosts: localhost
   connection: local
@@ -48,3 +52,19 @@
         virtual_network_name: "{{ vnet_name }}"
         state: present
       with_items: "{{ zones }}"
+
+    - name: Create Virtual Network Interface Card
+      azure_rm_networkinterface:
+        name: "{{ item.nic }}"
+        resource_group: "{{ resource_group }}"
+        create_with_security_group: "no"
+        location: "{{ location }}"
+        virtual_network: "{{ vnet_name }}"
+        subnet_name: "{{ item.subnet_name }}"
+        security_group: "{{ security_group }}"
+        ip_configurations:
+          - name: default
+            primary: yes
+        state: present
+      with_items: "{{ zones }}"
+
