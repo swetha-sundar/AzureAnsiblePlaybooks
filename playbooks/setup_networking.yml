@@ -25,13 +25,13 @@
         location: "{{ location }}"
         resource_group: "{{ resource_group }}"
         rules:
-          - name: Allow SSH access
+          - name: AllowSSH
             protocol: Tcp
             direction: Inbound
             access: Allow
             destination_port_range: 22
             priority: 1001
-          - name: Deny RDP access
+          - name: DenyRDP
             protocol: Tcp
             direction: Inbound
             access: Deny
@@ -42,9 +42,9 @@
     - name: Add Subnet to the above VNet
       azure_rm_subnet:
         name: "{{ item.subnet_name }}"
-        location: "{{ location }}"
         resource_group: "{{ resource_group }}"
         address_prefix_cidr: "{{ item.address_prefix }}"
         security_group: "{{ security_group }}"
+        virtual_network_name: "{{ vnet_name }}"
         state: present
-        with_items: "{{ zones }}"
+      with_items: "{{ zones }}"
