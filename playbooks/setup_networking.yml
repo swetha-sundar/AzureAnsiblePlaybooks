@@ -1,0 +1,17 @@
+# Look at infrastructure.md file
+- name: Setup networking for simple infrastructure
+  hosts: localhost
+  connection: local
+  vars_files:
+    - variables.yml
+
+  tasks:
+    - name: Create a Virtual Network in Azure
+      azure_rm_virtualnetwork:
+        name: "{{ vnet_name }}"
+        location: "{{ location }}"
+        resource_group: "{{ resource_group }}"
+        address_prefixes_cidr: "10.0.0.0/16"
+        tags:
+          project: vdc-ansible
+        state: present
