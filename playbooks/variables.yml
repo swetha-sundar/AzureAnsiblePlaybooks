@@ -5,4 +5,4 @@ vm_name: ansible-vm
 storage_account_type: "Standard_LRS"
 security_group: ansible-nsg
 zones:
-  - { subnet_name: ansible-subnet1, address_prefix: 10.0.0.0/24, nic: ansible-nic}
+  - { subnet_name: ansible-subnet1, address_prefix: 10.0.0.0/24, public_ip: ansible-ip1, nic: ansible-nic}

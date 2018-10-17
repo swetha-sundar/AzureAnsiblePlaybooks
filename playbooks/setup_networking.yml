@@ -53,6 +53,16 @@
         state: present
       with_items: "{{ zones }}"
 
+    - name: Create Public IP Address
+      azure_rm_publicipaddress:
+        name: "{{ item.public_ip }}"
+        resource_group: "{{ resource_group }}"
+        location: "{{ location }}"
+        sku: Basic
+        allocation_method: Static
+        state: present
+      with_items: "{{ zones }}"
+
     - name: Create Virtual Network Interface Card
       azure_rm_networkinterface:
         name: "{{ item.nic }}"
@@ -64,6 +74,7 @@
         security_group: "{{ security_group }}"
         ip_configurations:
           - name: default
+            public_ip_address_name: "{{ item.public_ip }}"
             primary: yes
         state: present
       with_items: "{{ zones }}"
