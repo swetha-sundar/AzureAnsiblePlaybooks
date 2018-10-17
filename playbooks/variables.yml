@@ -1,2 +1,4 @@
 resource_group: ansibleazurerg
 location: southeastasia
+vm_name: ansible-vm
+storage_account_type: "Standard_LRS"
