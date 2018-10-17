@@ -1,0 +1,38 @@
+## Before creating a virtual machine, there are certain things in terms of networking that you need to set up in your cloud.
+## Notes
+# 1. In order to fetch the list of Virtual machines, their properties (like sku, publisher, offer etc...) run the following CLI command:
+#    az vm image list --output table
+# 2. If "Managed Disk" type is not chosen then a new storage account is created for every VM that is created. 
+# 3. If NIC - Network Interface Card details are not provided, then a default nic will be created. And to create a nic, a VNet (Virtual Network) with at least one subnet should be present
+# 4. If subnet name is not provided, then by default the first subnet in the specified vnet will be chosen. If no subnet is present in the vnet, then the creation will fail.
+# 5. If Vnet name is not provided, then by default the first vnet in the speciifed resource group will be chosen. If no VNets present in the resource group, then the creation will fail.
+# 6. Standard VM Sizes for Linux Machines in Azure - https://docs.microsoft.com/en-us/azure/virtual-machines/linux/sizes-general
+
+- name: Create Virtual Machine in Azure
+  hosts: localhost
+  connection: local
+  vars_files:
+    - variables.yml
+  
+  tasks:
+  - name: Create VM
+    azure_rm_virtualmachine:
+      name: "{{ vm_name }}"  
+      resource_group: "{{ resource_group }}"
+      location: "{{ location }}"
+      image:
+        publisher: "Canonical"
+        offer: "UbuntuServer"
+        sku: "18.04-LTS"
+        version: "latest"
+      managed_disk_type: "{{ storage_account_type }}"
+      vm_size: "Standard_D1_v2"
+      admin_username: "swsundar"
+      admin_password: "Password@123"
+      virtual_network_name: "{{ vnet_name }}"
+      subnet_name: "{{ item.subnet_name }}"
+      network_interface_names: "{{ item.nic }}"
+      remove_on_absent:
+          - virtual_storage
+      state: present
+    with_items: "{{ zones }}"
