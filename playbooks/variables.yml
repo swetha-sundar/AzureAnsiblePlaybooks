@@ -3,3 +3,6 @@ location: southeastasia
 vnet_name: ansible-vnet
 vm_name: ansible-vm
 storage_account_type: "Standard_LRS"
+security_group: ansible-nsg
+zones:
+  - { subnet_name: ansible-subnet1, address_prefix: 10.0.0.0/24 }

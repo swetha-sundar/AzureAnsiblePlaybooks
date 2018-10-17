@@ -1,4 +1,7 @@
 # Look at infrastructure.md file
+# Notes:
+#   1. While creating a subnet in the virtual network, if you don't specify a network secuity group then a new one will be created
+#   2. 
 - name: Setup networking for simple infrastructure
   hosts: localhost
   connection: local
@@ -15,3 +18,33 @@
         tags:
           project: vdc-ansible
         state: present
+
+    - name: Create Network Security group
+      azure_rm_securitygroup:
+        name: "{{ security_group }}"
+        location: "{{ location }}"
+        resource_group: "{{ resource_group }}"
+        rules:
+          - name: Allow SSH access
+            protocol: Tcp
+            direction: Inbound
+            access: Allow
+            destination_port_range: 22
+            priority: 1001
+          - name: Deny RDP access
+            protocol: Tcp
+            direction: Inbound
+            access: Deny
+            destination_port_range: 3389
+            priority: 1000
+        state: present
+
+    - name: Add Subnet to the above VNet
+      azure_rm_subnet:
+        name: "{{ item.subnet_name }}"
+        location: "{{ location }}"
+        resource_group: "{{ resource_group }}"
+        address_prefix_cidr: "{{ item.address_prefix }}"
+        security_group: "{{ security_group }}"
+        state: present
+        with_items: "{{ zones }}"
