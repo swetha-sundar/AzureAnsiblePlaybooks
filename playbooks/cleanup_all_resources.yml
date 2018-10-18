@@ -5,7 +5,7 @@
   connection: local
   vars_files:
     - variables.yml
-  
+
   tasks:
     - name: Delete the Virtual Machine
       azure_rm_virtualmachine:
@@ -14,4 +14,13 @@
         location: "{{ location }}"      
         remove_on_absent:
             - virtual_storage
-        state: absent      
+        state: absent
+    
+    - name: Delete Virtual Network Interface Card
+      azure_rm_networkinterface:
+        resource_group: "{{ resource_group }}"
+        name: "{{ item.nic }}"
+        virtual_network: "{{ vnet_name }}"
+        subnet: "{{ item.subnet_name }}"        
+        state: absent
+      with_items: "{{ zones }}"
