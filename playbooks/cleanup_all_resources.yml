@@ -1,0 +1,17 @@
+## Notes
+#  1. Azure Virtual Machine name should be unique within the resource group. So specifying the name and resource group should be fine to delete a VM
+- name: Delete all resources
+  hosts: localhost
+  connection: local
+  vars_files:
+    - variables.yml
+  
+  tasks:
+    - name: Delete the Virtual Machine
+      azure_rm_virtualmachine:
+        name: "{{ vm_name }}"  
+        resource_group: "{{ resource_group }}"
+        location: "{{ location }}"      
+        remove_on_absent:
+            - virtual_storage
+        state: absent      
