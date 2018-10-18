@@ -32,3 +32,31 @@
         location: "{{ location }}"        
         state: absent
       with_items: "{{ zones }}"
+
+    - name: Delete Subnet
+      azure_rm_subnet:
+        name: "{{ item.subnet_name }}"
+        resource_group: "{{ resource_group }}"
+        virtual_network_name: "{{ vnet_name }}"
+        state: absent
+      with_items: "{{ zones }}"
+
+    - name: Delete Virtual Network
+      azure_rm_virtualnetwork:
+        name: "{{ vnet_name }}"
+        location: "{{ location }}"
+        resource_group: "{{ resource_group }}"
+        state: absent
+
+    - name: Delete Network Security Group
+      azure_rm_securitygroup:
+        name: "{{ security_group }}"
+        location: "{{ location }}"
+        resource_group: "{{ resource_group }}"
+        state: absent
+
+    - name: Delete Resource Group
+      azure_rm_resourcegroup:
+        name: "{{ resource_group }}"
+        location: "{{ location }}"
+        state: absent
