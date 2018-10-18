@@ -24,3 +24,11 @@
         subnet: "{{ item.subnet_name }}"        
         state: absent
       with_items: "{{ zones }}"
+
+    - name: Delete Public IP Address
+      azure_rm_publicipaddress:
+        name: "{{ item.public_ip }}"
+        resource_group: "{{ resource_group }}"
+        location: "{{ location }}"        
+        state: absent
+      with_items: "{{ zones }}"
