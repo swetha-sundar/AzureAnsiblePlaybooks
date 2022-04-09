@@ -1,0 +1,9 @@
+- name: Setup Kubernetes cluster
+  hosts: localhost
+  connection: local
+  vars_files:
+    - variables.yml
+
+  tasks:
+    - name: Create Kubernetes
+      
